@@ -9,7 +9,7 @@ from cat import Cat
 
 
 def _commit_changes(message: str):
-    # TODO
+    # TODO Automatically commit changes within gittycat folder to Git Repository
     print('Warn: Committing gittycat changes is not implemented yet')
 
 
@@ -26,7 +26,6 @@ def adopt(name: str, **kwargs):
 
     cat = Cat(name)
     cat.save()
-    # TODO Automatically commit changes within gittycat folder to Git Repository
     print(f'GotSuccessfully adopted {cat.name}, your new best friend!')
     _commit_changes(f'Gittycat: Adopted new Cat "{cat.name}"')
 
