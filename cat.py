@@ -71,7 +71,6 @@ class Cat:
                 'food': self.food,
                 'energy': self.energy,
                 'excitement': self.excitement,
-                # TODO JSON Serializable
                 'last_update': self.last_update.timestamp()
             }
             json.dump(data, outfile, indent=2)
