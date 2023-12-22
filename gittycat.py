@@ -2,16 +2,23 @@ import os.path
 import shutil
 from pathlib import Path
 
+from git import Repo, GitCommandError
 import argh
 from argh import arg
 
 from cat import Cat
 
 
-def _commit_changes(message: str):
-    # TODO Automatically commit changes within gittycat folder to Git Repository
-    print('Warn: Committing gittycat changes is not implemented yet')
-
+def _commit_changes(message: str, author='Gittycat <gittycat@example.com>'):
+    repo = Repo('.')
+    git = repo.git
+    try:
+        git.add('.gittycat/*')
+    except GitCommandError:
+        # Did not match any files
+        return
+    git.commit(message=message, author=author)
+    assert not repo.bare
 
 @arg('name', type=str, help='Name of your new cat')
 @arg('--personality', type=str, help='Personality of the cat to adopt')
@@ -55,8 +62,8 @@ def release(**kwargs):
     Releases your cat into the wilds of the cloud. Use this command to remove Gittycat from your repository again.
     """
     print('Releasing all Cats into the cloud!')
-    shutil.rmtree('.gittycat')
-    # TODO Automatically commit changes within gittycat folder to Git Repository
+    shutil.rmtree('.gittycat', ignore_errors=True)
+    _commit_changes('Gittycat: Released all Cats and removed Gittycat from Repo')
 
 
 if __name__ == '__main__':
