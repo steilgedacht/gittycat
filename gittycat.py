@@ -14,7 +14,7 @@ EXCITEMENT_PER_LINE = 0.5
 
 HUNGER_PER_DAY = 100.0
 ENERGY_PER_DAY = 100.0
-EXCITEMENT_PER_DAY = 100.0
+BOREDOM_PER_DAY = 100.0
 
 
 def _commit_changes(message: str, author='Gittycat <gittycat@example.com>'):
@@ -43,7 +43,7 @@ def adopt(name: str, **kwargs):
     cat = Cat(name)
     cat.save()
     print(f'GotSuccessfully adopted {cat.name}, your new best friend!')
-    _commit_changes(f'Gittycat: Adopted new Cat "{cat.name}"')
+    _commit_changes(f'Gittycat | Adopted new Cat "{cat.name}"')
 
 
 @arg('name', type=str, help='Name of your new cat')
@@ -59,7 +59,7 @@ def status(name: str):
     days_since_last_update = (datetime.now(timezone.utc) - cat.last_update).total_seconds() / 86400.0
     # Adjust cat needs based on time passed
     cat.hunger(days_since_last_update * HUNGER_PER_DAY)
-    cat.bore(days_since_last_update * EXCITEMENT_PER_DAY)
+    cat.bore(days_since_last_update * BOREDOM_PER_DAY)
     cat.recharge(days_since_last_update * ENERGY_PER_DAY)
 
     # Iterate through all commits since last update
@@ -68,7 +68,7 @@ def status(name: str):
         if commit.committed_datetime < cat.last_update:
             break
         # Exclude commits made by Gittycat itself
-        if commit.author.name == 'Gittycat':
+        if 'Gittycat' in commit.author.name:
             continue
         # Process commit
         print(f'Processing commit {commit.hexsha} by {commit.author.name} ({commit.message.strip()})')
@@ -76,12 +76,12 @@ def status(name: str):
         cat.feed(FOOD_PER_COMMIT)
         # Every line of code makes the cat more tired
         line_changes = commit.stats.total['lines']
-        cat.exhaust(line_changes * EXCITEMENT_PER_LINE)
-        # TODO excitement, based on what metric?
+        cat.excite(line_changes * EXCITEMENT_PER_LINE)
+        # TODO exhaustion, based on what metric?
 
     cat.last_update = datetime.now(timezone.utc)
     cat.save()
-    _commit_changes('Gittycat: Processed new commits and updated cat needs')
+    _commit_changes(f'Gittycat | Updated my needs', f'{cat.name} (via Gittycat) <gittycat@example.com>')
 
 
 @arg('name', type=str, help='Name of your new cat')
@@ -100,7 +100,7 @@ def release(**kwargs):
     """
     print('Releasing all Cats into the cloud!')
     shutil.rmtree('.gittycat', ignore_errors=True)
-    _commit_changes('Gittycat: Released all Cats and removed Gittycat from Repo')
+    _commit_changes('Gittycat | Released all Cats and removed Gittycat from Repo')
 
 
 if __name__ == '__main__':
