@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 import os
 
@@ -14,11 +14,11 @@ class Cat:
         self.energy = self.max_energy
         self.excitement = self.max_excitement
 
-        self.last_update = datetime.utcnow()
+        self.last_update = datetime.now(timezone.utc)
 
     def pet(self):
         # TODO
-        raise NotImplementedError
+        pass
 
     def feed(self, amount: float):
         self.food = min(self.food + amount, self.max_food)
@@ -43,20 +43,22 @@ class Cat:
         if not os.path.isdir(os.path.join('.gittycat', 'cats')):
             raise FileNotFoundError('.gittycat folder missing or corrupted!')
 
-        with open(os.path.join('.gittycat', 'cats', f'{name}.json'), 'r') as infile:
-            data = json.load(infile)
+        try:
+            with open(os.path.join('.gittycat', 'cats', f'{name}.json'), 'r') as infile:
+                data = json.load(infile)
+                cat = Cat(name)
+                cat.name = data['name']
+                cat.max_food = data['max_food']
+                cat.max_energy = data['max_energy']
+                cat.max_excitement = data['max_excitement']
 
-        cat = Cat(name)
-        cat.name = data['name']
-        cat.max_food = data['max_food']
-        cat.max_energy = data['max_energy']
-        cat.max_excitement = data['max_excitement']
-
-        cat.food = data['food']
-        cat.energy = data['energy']
-        cat.excitement = data['excitement']
-        cat.last_update = datetime.utcfromtimestamp(data['last_update'])
-        return cat
+                cat.food = data['food']
+                cat.energy = data['energy']
+                cat.excitement = data['excitement']
+                cat.last_update = datetime.fromtimestamp(data['last_update'], timezone.utc)
+                return cat
+        except FileNotFoundError:
+            raise FileNotFoundError(f'No cat with name {name} found!')
 
     def save(self):
         """Saves the cat into the corresponding json file"""
