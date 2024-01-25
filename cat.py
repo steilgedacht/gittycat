@@ -14,6 +14,7 @@ class Cat:
                  max_excitement=100.0,
                  excitement_gain_modifier=0.5,
                  excitement_drain_modifier=100.0,
+                 evolution_thresholds=None,
                  ):
         """
         :param name: Name of the cat. Purely cosmetic
@@ -26,6 +27,7 @@ class Cat:
         :param max_excitement: Maximum value of the excitement meter
         :param excitement_gain_modifier: Excitement gained per line added
         :param excitement_drain_modifier: Excitement lost per day
+        :param evolution_thresholds: List of thresholds for the cat to evolve. If None, the cat will always stay at evolution stage 0
         """
         self.name = name
 
@@ -44,6 +46,9 @@ class Cat:
         self.excitement_drain_modifier = excitement_drain_modifier
         self.excitement = self.max_excitement
 
+        self.evolution_thresholds = evolution_thresholds if evolution_thresholds is not None else []
+        self.evolution = 0.0
+
         self.last_update = datetime.now(timezone.utc)
 
     def pet(self):
@@ -56,15 +61,19 @@ class Cat:
         # TODO
         pass
 
-    def update_by_time_passed(self, days: float):
+    def update_by_time_passed(self, days: float) -> bool:
         """
         Updates the cat needs by the given amount of days.
         :param days: a float representing the amount of days that passed since the last update
-        :return: None
+        :return: True if cat reached new evolution stage, False otherwise
         """
         self.hunger(days)
         self.bore(days * self.excitement_drain_modifier)
         self.recharge(days * self.energy_gain_modifier)
+        prev_stage = self.get_evolution_stage()
+        self.evolve(days)
+        new_stage = self.get_evolution_stage()
+        return prev_stage != new_stage
 
     def feed(self, amount: float):
         self.food = min(self.food + amount * self.food_gain_modifier, self.max_food)
@@ -83,6 +92,18 @@ class Cat:
 
     def bore(self, days: float):
         self.excitement = max(0.0, self.excitement - days * self.excitement_drain_modifier)
+
+    def evolve(self, days: float):
+        self.evolution += days
+
+    def get_evolution_stage(self):
+        stage = 0
+        for threshold in self.evolution_thresholds:
+            if self.evolution >= threshold:
+                stage += 1
+            else:
+                break
+        return stage
 
     @staticmethod
     def load(name: str) -> 'Cat':
@@ -109,6 +130,9 @@ class Cat:
                 cat.excitement_gain_modifier = data['excitement_gain_modifier']
                 cat.excitement_drain_modifier = data['excitement_drain_modifier']
                 cat.excitement = data['excitement']
+
+                cat.evolution_thresholds = data['evolution_thresholds']
+                cat.evolution = data['evolution']
 
                 cat.last_update = datetime.fromtimestamp(data['last_update'], timezone.utc)
                 return cat
@@ -137,6 +161,9 @@ class Cat:
                 'excitement_gain_modifier': self.excitement_gain_modifier,
                 'excitement_drain_modifier': self.excitement_drain_modifier,
                 'excitement': self.excitement,
+
+                'evolution_thresholds': self.evolution_thresholds,
+                'evolution': self.evolution,
 
                 'last_update': self.last_update.timestamp()
             }

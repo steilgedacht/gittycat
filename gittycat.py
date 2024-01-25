@@ -54,7 +54,7 @@ def status(name: str):
     # Get days since last update, including partial days
     days_since_last_update = (datetime.now(timezone.utc) - cat.last_update).total_seconds() / 86400.0
     # Update cat state based on time passed
-    cat.update_by_time_passed(days_since_last_update)
+    new_evolution_reached: bool = cat.update_by_time_passed(days_since_last_update)
 
     # Iterate through all commits since last update
     print('Processing commits since last update...')
@@ -80,6 +80,7 @@ def status(name: str):
     _commit_changes(f'Gittycat | Updated my needs', f'{cat.name} (via Gittycat) <gittycat@example.com>')
 
     # TODO output cat status to console using descriptive text and ascii art
+    # TODO output special message if new evolution stage was reached
 
 
 @arg('name', type=str, help='Name of your new cat')
