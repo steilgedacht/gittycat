@@ -15,6 +15,7 @@ class Cat:
                  excitement_gain_modifier=0.5,
                  excitement_drain_modifier=100.0,
                  evolution_thresholds=None,
+                 look='cat1'
                  ):
         """
         :param name: Name of the cat. Purely cosmetic
@@ -30,6 +31,7 @@ class Cat:
         :param evolution_thresholds: List of thresholds for the cat to evolve. If None, the cat will always stay at evolution stage 0
         """
         self.name = name
+        self.look = look
 
         self.max_food = max_food
         self.food_gain_modifier = food_gain_modifier
@@ -139,6 +141,37 @@ class Cat:
         except FileNotFoundError:
             raise FileNotFoundError(f'No cat with name {name} found!')
 
+    @staticmethod
+    def create_with_personality(name: str, personality: str):
+        """Intializes a new cat with the given name and personality"""
+        if not os.path.isdir(os.path.join('.gittycat', 'cats')):
+            raise FileNotFoundError('.gittycat folder missing or corrupted!')
+        dirname = os.path.dirname(__file__)
+        # personality is saved in a json file relative to the gittycat installation
+        with open(os.path.join(dirname, 'personalities', f'{personality}.json'), 'r') as infile:
+            data = json.load(infile)
+            cat = Cat(name)
+            cat.look = data['look']
+
+            cat.max_food = data['max_food']
+            cat.food_gain_modifier = data['food_gain_modifier']
+            cat.food_drain_modifier = data['food_drain_modifier']
+            cat.food = cat.max_food
+
+            cat.max_energy = data['max_energy']
+            cat.energy_gain_modifier = data['energy_gain_modifier']
+            cat.energy_drain_modifier = data['energy_drain_modifier']
+            cat.energy = cat.max_energy
+
+            cat.max_excitement = data['max_excitement']
+            cat.excitement_gain_modifier = data['excitement_gain_modifier']
+            cat.excitement_drain_modifier = data['excitement_drain_modifier']
+            cat.excitement = cat.max_excitement
+
+            cat.evolution_thresholds = data['evolution_thresholds']
+            cat.evolution = 0.0
+            return cat
+
     def save(self):
         """Saves the cat into the corresponding json file"""
         if not os.path.isdir(os.path.join('.gittycat', 'cats')):
@@ -146,6 +179,7 @@ class Cat:
         with open(os.path.join('.gittycat', 'cats', f'{self.name}.json'), 'w') as outfile:
             data = {
                 'name': self.name,
+                'look': self.look,
 
                 'max_food': self.max_food,
                 'food_gain_modifier': self.food_gain_modifier,

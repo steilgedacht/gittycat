@@ -1,0 +1,13 @@
+{
+  "look": "cat1",
+  "max_food": 100.0,
+  "food_gain_modifier": 10.0,
+  "food_drain_modifier": 100.0,
+  "max_energy": 100.0,
+  "energy_gain_modifier": 100.0,
+  "energy_drain_modifier": 5.0,
+  "max_excitement": 100.0,
+  "excitement_gain_modifier": 0.5,
+  "excitement_drain_modifier": 100.0,
+  "evolution_thresholds": []
+}

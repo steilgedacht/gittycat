@@ -26,7 +26,7 @@ def _commit_changes(message: str, author='Gittycat <gittycat@example.com>'):
 
 @arg('name', type=str, help='Name of your new cat')
 @arg('--personality', type=str, help='Personality of the cat to adopt')
-def adopt(name: str, **kwargs):
+def adopt(name: str, personality: str = 'default', **kwargs):
     """Adopts a cat into the Git Repository associated with the current working directory"""
     try:
         Path(os.path.join('.gittycat', 'cats')).mkdir(parents=True)
@@ -35,7 +35,7 @@ def adopt(name: str, **kwargs):
             ".gittycat folder already exists for this repository! Delete the folder or use " +
             "'gittycat release' to get rid of any remaining cats.")
 
-    cat = Cat(name)
+    cat = Cat.create_with_personality(name, personality)
     cat.save()
     print(f'GotSuccessfully adopted {cat.name}, your new best friend!')
     _commit_changes(f'Gittycat | Adopted new Cat "{cat.name}"')
