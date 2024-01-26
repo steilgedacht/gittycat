@@ -9,5 +9,5 @@
   "max_excitement": 100.0,
   "excitement_gain_modifier": 0.5,
   "excitement_drain_modifier": 100.0,
-  "evolution_thresholds": []
+  "evolution_thresholds": [10.0]
 }

@@ -2,12 +2,14 @@
 
 import os.path
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from git import Repo, GitCommandError
 import argh
 from argh import arg
+from tqdm import tqdm
 
 from cat import Cat
 
@@ -24,9 +26,16 @@ def _commit_changes(message: str, author='Gittycat <gittycat@example.com>'):
     assert not repo.bare
 
 
+def _has_changes_since(repo: Repo, timestamp: datetime) -> bool:
+    for commit in repo.iter_commits('HEAD'):
+        if commit.committed_datetime > timestamp:
+            return True
+    return False
+
+
 @arg('name', type=str, help='Name of your new cat')
 @arg('--personality', type=str, help='Personality of the cat to adopt')
-def adopt(name: str, personality: str = 'default', **kwargs):
+def adopt(name: str, personality: str = 'default', **kwargs) -> None:
     """Adopts a cat into the Git Repository associated with the current working directory"""
     try:
         Path(os.path.join('.gittycat', 'cats')).mkdir(parents=True)
@@ -37,17 +46,41 @@ def adopt(name: str, personality: str = 'default', **kwargs):
 
     cat = Cat.create_with_personality(name, personality)
     cat.save()
-    print(f'GotSuccessfully adopted {cat.name}, your new best friend!')
+    print(f'Successfully adopted {cat.name}, your new best friend!')
     _commit_changes(f'Gittycat | Adopted new Cat "{cat.name}"')
 
 
-@arg('name', type=str, help='Name of your new cat')
-def status(name: str):
-    # TODO: I'm not happy with the name of this command. a status command should not change anything
+@arg('name', type=str, help='Name of new cat')
+def status(name: str) -> None:
     """
-    Gives back the current state of your cat.
-    Is also used to process any new changed to the repository that were made since the last use of Gittycat
+    Gives back an overview of the current needs of your cat.
     """
+    cat = Cat.load(name)
+    repo = Repo('.')
+
+    print('==========')
+    print('Cat needs:')
+    print('==========')
+    meter_format = '{desc} |{bar}| ({n:06.2f}/{total:06.2f})'
+    with tqdm(total=cat.max_food, desc='Food      ', file=sys.stdout, ncols=100, bar_format=meter_format) as bar:
+        bar.update(cat.food)
+    with tqdm(total=cat.max_food, desc='Energy    ', file=sys.stdout, ncols=100, bar_format=meter_format) as bar:
+        bar.update(cat.energy)
+    with tqdm(total=cat.max_food, desc='Excitement', file=sys.stdout, ncols=100, bar_format=meter_format) as bar:
+        bar.update(cat.excitement)
+    print(f'Current evolution stage: {cat.get_evolution_stage()}')
+    print(f'Evolution: {cat.evolution:.2f} (Stage Thresholds: {cat.evolution_thresholds})')
+
+    # TODO output cat status to console using scii art
+
+    if _has_changes_since(repo, cat.last_update):
+        print('\nYou have unprocessed commits since the last time you used Gittycat!'
+              ' Use "gittycat update" to process them.')
+
+
+@arg('name', type=str, help='Name of new cat')
+def update(name: str) -> None:
+    """Processes any commits made since this command was last used and updates the cat's needs accordingly."""
     cat = Cat.load(name)
     repo = Repo('.')
 
@@ -55,7 +88,6 @@ def status(name: str):
     days_since_last_update = (datetime.now(timezone.utc) - cat.last_update).total_seconds() / 86400.0
     # Update cat state based on time passed
     new_evolution_reached: bool = cat.update_by_time_passed(days_since_last_update)
-
     # Iterate through all commits since last update
     print('Processing commits since last update...')
     for commit in repo.iter_commits('HEAD'):
@@ -73,18 +105,21 @@ def status(name: str):
         cat.exhaust(len(commit.stats.files.keys()))
         # Every line added to the repository make the cat more excited
         cat.excite(commit.stats.total['insertions'])
-    print('Done!')
+    print('Done!\n')
 
     cat.last_update = datetime.now(timezone.utc)
     cat.save()
     _commit_changes(f'Gittycat | Updated my needs', f'{cat.name} (via Gittycat) <gittycat@example.com>')
 
-    # TODO output cat status to console using descriptive text and ascii art
-    # TODO output special message if new evolution stage was reached
+    if new_evolution_reached:
+        print(f'What?')
+        print(f'{cat.name} is evolving! They have now reached evolution stage {cat.get_evolution_stage()}!')
+
+    status(name)
 
 
 @arg('name', type=str, help='Name of your new cat')
-def pet(name: str):
+def pet(name: str) -> None:
     """
     Pets the cat. Very important.
     """
@@ -93,7 +128,7 @@ def pet(name: str):
     print(f'You pet your cat {name}. It purrs happily.')
 
 
-def release(**kwargs):
+def release(**kwargs) -> None:
     """
     Releases your cat into the wilds of the cloud. Use this command to remove Gittycat from your repository again.
     """
@@ -103,4 +138,4 @@ def release(**kwargs):
 
 
 if __name__ == '__main__':
-    argh.dispatch_commands([adopt, status, pet, release])
+    argh.dispatch_commands([adopt, status, update, pet, release])

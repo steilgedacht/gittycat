@@ -70,8 +70,8 @@ class Cat:
         :return: True if cat reached new evolution stage, False otherwise
         """
         self.hunger(days)
-        self.bore(days * self.excitement_drain_modifier)
-        self.recharge(days * self.energy_gain_modifier)
+        self.bore(days)
+        self.recharge(days)
         prev_stage = self.get_evolution_stage()
         self.evolve(days)
         new_stage = self.get_evolution_stage()
@@ -83,11 +83,11 @@ class Cat:
     def hunger(self, days: float):
         self.food = max(0.0, self.food - days * self.food_drain_modifier)
 
-    def recharge(self, amount: float):
-        self.energy = min(self.energy + amount * self.energy_gain_modifier, self.max_energy)
+    def recharge(self, days: float):
+        self.energy = min(self.energy + days * self.energy_gain_modifier, self.max_energy)
 
-    def exhaust(self, days: float):
-        self.energy = max(0.0, self.energy - days * self.energy_drain_modifier)
+    def exhaust(self, amount: float):
+        self.energy = max(0.0, self.energy - amount * self.energy_drain_modifier)
 
     def excite(self, amount: float):
         self.excitement = min(self.excitement + amount + self.excitement_gain_modifier, self.max_excitement)
