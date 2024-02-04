@@ -12,7 +12,7 @@ class Cat:
                  energy_gain_modifier=100.0,
                  energy_drain_modifier=5.0,
                  max_excitement=100.0,
-                 excitement_gain_modifier=0.5,
+                 excitement_gain_modifier=5.0,
                  excitement_drain_modifier=100.0,
                  evolution_thresholds=None,
                  look='cat1'
@@ -55,13 +55,11 @@ class Cat:
 
     def pet(self):
         """A manual way to increase cat excitement. Besides, who doesn't like petting cats?"""
-        # TODO
-        pass
+        self.excitement = min(self.excitement + self.excitement_gain_modifier, self.max_excitement)
 
     def nap(self):
         """A manual way to increase cat energy"""
-        # TODO
-        pass
+        self.energy = min(self.energy + self.energy_gain_modifier, self.max_energy)
 
     def update_by_time_passed(self, days: float) -> bool:
         """
