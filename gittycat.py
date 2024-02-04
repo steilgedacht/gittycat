@@ -121,11 +121,21 @@ def update(name: str) -> None:
 @arg('name', type=str, help='Name of your new cat')
 def pet(name: str) -> None:
     """
-    Pets the cat. Very important.
+    Pets your cat. Very important.
     """
     cat = Cat.load(name)
     cat.pet()
     print(f'You pet your cat {name}. It purrs happily.')
+
+
+@arg('name', type=str, help='Name of your new cat')
+def nap(name: str) -> None:
+    """
+    Lets your cat take a quick nap as a manual way to recover energy for those busy coding days
+    """
+    cat = Cat.load(name)
+    cat.nap()
+    print(f'Time for {name} to take a nap and recover some energy! Zzzz...')
 
 
 def release(**kwargs) -> None:
@@ -138,4 +148,4 @@ def release(**kwargs) -> None:
 
 
 if __name__ == '__main__':
-    argh.dispatch_commands([adopt, status, update, pet, release])
+    argh.dispatch_commands([adopt, status, update, pet, nap, release])
