@@ -200,3 +200,11 @@ class Cat:
                 'last_update': self.last_update.timestamp()
             }
             json.dump(data, outfile, indent=2)
+    
+    def ascii_plot(self, state):
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ascii", self.look, "0", state + ".txt")
+
+        with open(path, 'r') as file:
+            content = file.read()
+            print(content)
+        

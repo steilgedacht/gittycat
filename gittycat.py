@@ -47,6 +47,7 @@ def adopt(name: str, personality: str = 'default', **kwargs) -> None:
     cat = Cat.create_with_personality(name, personality)
     cat.save()
     print(f'Successfully adopted {cat.name}, your new best friend!')
+    cat.ascii_plot("adoption")
     _commit_changes(f'Gittycat | Adopted new Cat "{cat.name}"')
 
 
@@ -143,6 +144,13 @@ def release(**kwargs) -> None:
     Releases your cat into the wilds of the cloud. Use this command to remove Gittycat from your repository again.
     """
     print('Releasing all Cats into the cloud!')
+
+    # plot the ascii
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ascii", "cat1", "0", "release.txt")
+    with open(path, 'r') as file:
+        content = file.read()
+        print(content)
+    
     shutil.rmtree('.gittycat', ignore_errors=True)
     _commit_changes('Gittycat | Released all Cats and removed Gittycat from Repo')
 
