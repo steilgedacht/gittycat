@@ -1,6 +1,9 @@
 # Gittycat
 ```
-<ASCII art goes here>
+ ／l、
+（ﾟ､ ｡７
+ l、ﾞ~ヽ
+ じしf_, )ノ 
 ```
 
 Gittycat ist dein Tamagothi für Git. Eine liebenswerte Katze die in deinem Repository lebt, 
@@ -43,7 +46,8 @@ Die Katze commitet sich dann selbstständig in dein Repository.
 
 Zusätzlich kannst du ihre Persönlichkeit auswählen. Die Persönlichkeit bestimmt, wie schnell/stark die Bedürfnisse der Katze geändert werden.
 (zumindest könntest du das theoretisch, aktuell gibt es nur das Default-Profil. Erstell doch deine eigenen unter `gittycat/personalities`).
-Die Persönlichkeit kannst du später auch manuell in der JSON-Datei unter `.gittycat/cats` ändern.
+Die Persönlichkeit kannst du später auch manuell in der JSON-Datei unter `.gittycat/cats` ändern. Innerhalb der JSON-Datei kannst
+du auch den Look deiner Katze anpassen (ASCII-Art, aktuell verfügbar sind `cat1` und `cat2`). *Vergiss nicht deine Änderungen zu commiten!*.
 
 ```bash
 # Adopt a new cat
