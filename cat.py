@@ -55,11 +55,15 @@ class Cat:
 
     def pet(self):
         """A manual way to increase cat excitement. Besides, who doesn't like petting cats?"""
-        self.excitement = min(self.excitement + self.excitement_gain_modifier, self.max_excitement)
+        self.excitement = min(self.excitement + self.excitement_gain_modifier * 20, self.max_excitement)
+        self.ascii_plot("petting")
+        self.save()
 
     def nap(self):
         """A manual way to increase cat energy"""
         self.energy = min(self.energy + self.energy_gain_modifier, self.max_energy)
+        self.ascii_plot("tired")
+        self.save()
 
     def update_by_time_passed(self, days: float) -> bool:
         """
@@ -202,7 +206,7 @@ class Cat:
             json.dump(data, outfile, indent=2)
     
     def ascii_plot(self, state):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ascii", self.look, "0", state + ".txt")
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ascii", str(self.look), str(self.get_evolution_stage()), state + ".txt")
 
         with open(path, 'r') as file:
             content = file.read()

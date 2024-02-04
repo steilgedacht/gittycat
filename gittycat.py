@@ -72,7 +72,12 @@ def status(name: str) -> None:
     print(f'Current evolution stage: {cat.get_evolution_stage()}')
     print(f'Evolution: {cat.evolution:.2f} (Stage Thresholds: {cat.evolution_thresholds})')
 
-    # TODO output cat status to console using scii art
+    if cat.excitement > 66 and cat.energy > 66:
+        cat.ascii_plot("excited")
+    elif cat.excitement < 33 or cat.energy < 33:
+        cat.ascii_plot("bored")
+    else:
+        cat.ascii_plot("normal")
 
     if _has_changes_since(repo, cat.last_update):
         print('\nYou have unprocessed commits since the last time you used Gittycat!'
