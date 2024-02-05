@@ -6,7 +6,7 @@
  じしf_, )ノ 
 ```
 
-**Ein Projekt von Max Walder (k12125024), Benjamin Bergmann (TODO) und Roman Rittler (TODO). Wir sind mit einer eventuellen Veröffentlichung einverstanden.**
+**Ein Projekt von Max Walder (k12125024), Benjamin Bergmann (k12104845) und Roman Rittler (k12104742). Wir sind mit einer eventuellen Veröffentlichung einverstanden.**
 
 Gittycat ist dein Tamagothi für Git. Eine liebenswerte Katze die in deinem Repository lebt, 
 versorgt werden muss und dich idealerweise eine emotionale Bindung zu deinem Code aufbauen lässt.
