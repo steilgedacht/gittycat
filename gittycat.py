@@ -131,24 +131,27 @@ def pet(name: str) -> None:
     """
     cat = Cat.load(name)
     cat.pet()
+    _commit_changes(f'Gittycat | I got some pets. Happy times!', f'{cat.name} (via Gittycat)')
     print(f'You pet your cat {name}. It purrs happily.')
 
 
-@arg('name', type=str, help='Name of your new cat')
+@arg('name', type=str, help='Name of your cat')
 def nap(name: str) -> None:
     """
     Lets your cat take a quick nap as a manual way to recover energy for those busy coding days
     """
     cat = Cat.load(name)
     cat.nap()
+    _commit_changes(f'Gittycat | I took a nap and recovered some energy', f'{cat.name} (via Gittycat)')
     print(f'Time for {name} to take a nap and recover some energy! Zzzz...')
 
 
+@arg('name', type=str, help='Name of your cat')
 def release(**kwargs) -> None:
     """
     Releases your cat into the wilds of the cloud. Use this command to remove Gittycat from your repository again.
     """
-    print('Releasing all Cats into the cloud!')
+    print('Releasing your cat into the wild!')
 
     # plot the ascii
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ascii", "cat1", "0", "release.txt")
