@@ -55,13 +55,13 @@ class Cat:
 
     def pet(self):
         """A manual way to increase cat excitement. Besides, who doesn't like petting cats?"""
-        self.excitement = min(self.excitement + self.excitement_gain_modifier * 20, self.max_excitement)
+        self.excite(10)
         self.ascii_plot("petting")
         self.save()
 
     def nap(self):
         """A manual way to increase cat energy"""
-        self.energy = min(self.energy + self.energy_gain_modifier, self.max_energy)
+        self.recharge(1/24)
         self.ascii_plot("tired")
         self.save()
 
