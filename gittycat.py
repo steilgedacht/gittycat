@@ -72,12 +72,21 @@ def status(name: str) -> None:
     print(f'Current evolution stage: {cat.get_evolution_stage()}')
     print(f'Evolution: {cat.evolution:.2f} (Stage Thresholds: {cat.evolution_thresholds})')
 
-    if cat.excitement > 66 and cat.energy > 66:
-        cat.ascii_plot("excited")
-    elif cat.excitement < 33 or cat.energy < 33:
+    if cat.food < 33:
         cat.ascii_plot("bored")
+        print('Your cat is hungry! Feed it some commits!')
+    elif cat.excitement < 33:
+        cat.ascii_plot("bored")
+        print('Your cat is bored! Give it some new lines of code as a treat!')
+    elif cat.energy < 33:
+        cat.ascii_plot("tired")
+        print('Your cat is tired! Wait for its energy to recharge or let it take a nap!')
+    elif cat.excitement > 66:
+        cat.ascii_plot("excited")
+        print('Your cat is excited! It loves all the attention it\'s been getting!')
     else:
         cat.ascii_plot("normal")
+        print('Your cat is feeling normal.')
 
     if _has_changes_since(repo, cat.last_update):
         print('\nYou have unprocessed commits since the last time you used Gittycat!'
